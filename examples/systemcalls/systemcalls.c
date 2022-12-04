@@ -1,3 +1,7 @@
+#include <stdlib.h>  
+#include <fcntl.h>  
+#include <unistd.h>
+#include <sys/wait.h>
 #include "systemcalls.h"
 
 /**
@@ -16,7 +20,26 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
-
+if(NULL == cmd) {
+	printf("cmd is NULL");  
+	return false;
+}
+printf("cmd is (%s)\n", cmd);
+int ret = system(cmd);
+if( ret == 127) {
+    printf("can't execute /bin/sh!\n");
+	return false;
+} else if(ret == -1) {
+    printf("fork error!\n");
+	return false;
+} else {
+ 	ret = WEXITSTATUS(ret); 
+      	printf("return value : %d\n", WEXITSTATUS(ret));
+	if(0 == ret)
+		return true;
+	else
+		return false;
+}
     return true;
 }
 
@@ -58,10 +81,30 @@ bool do_exec(int count, ...)
  *   as second argument to the execv() command.
  *
 */
+	if (0 != access(command[0], F_OK)) {
+		return false;
+	} 
+    
+    
+    	pid_t pid = fork();
+	if(0 == pid) {
+		execv(command[0], command);  
+		printf("execv failed \n"); 
+		return -1;
+	}
+	else {
+		printf("child pid is %d\n", pid); 
+		int status;  
+		int ret = waitpid(pid, &status, 0);
+	//waitpid(pid, &status, 0);
+		printf("waitpid ret is %d / statis is %d\n", ret, status); 
+		if(0 != status) {
+			return false;
+		}
+	}
+	va_end(args);
 
-    va_end(args);
-
-    return true;
+	return true;
 }
 
 /**
@@ -92,6 +135,22 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *   The rest of the behaviour is same as do_exec()
  *
 */
+	int fd = open(outputfile, O_WRONLY|O_TRUNC|O_CREAT, 0644);  
+	int kidpid;
+
+	switch(kidpid=fork())   {
+		case 0:
+    			if (dup2(fd, 1) < 0) { perror("dup2"); abort(); }
+    			close(fd);
+			execv(command[0], command); 
+		default:
+			close(fd);
+			int status;  
+	//int ret = waitpid(kidpid, &status, 0);
+			waitpid(kidpid, &status, 0);
+
+
+	}
 
     va_end(args);
 
