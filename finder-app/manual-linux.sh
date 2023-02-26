@@ -81,7 +81,6 @@ fi
 
 # Making and installing busybox
 sudo make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} CONFIG_PREFIX=${OUTDIR}/rootfs PATH=$PATH install
-#make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} CONFIG_PREFIX=${OUTDIR}/rootfs PATH=$PATH install
 cd ${OUTDIR}/rootfs 
 
 echo "Library dependencies"
@@ -110,7 +109,6 @@ sudo mknod -m 666 dev/console c 5 1
 cd ${FINDER_APP_DIR}
 make clean
 make CROSS_COMPILE=${CROSS_COMPILE} 
-#make CROSS_COMPILE=${CROSS_COMPILE} all
 
 # Copying the finder related scripts and executables to the /home directory
 # on the target rootfs
