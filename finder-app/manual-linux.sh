@@ -128,5 +128,6 @@ sudo chown -R root:root *
 
 # Creating initramfs.cpio.gz 
 find . -print0 | cpio --null --create --verbose --format=newc | gzip > ../initramfs.cpio.gz  
+
  
   
