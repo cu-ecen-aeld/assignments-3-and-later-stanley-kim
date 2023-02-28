@@ -42,8 +42,8 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
      thread_args->ptr_mutex = mutex;
      thread_args->thread_complete_success = true; 
 
-     pthread_create(thread, NULL, threadfunc, thread_args);
-
-     return false;
+     if(pthread_create(thread, NULL, threadfunc, thread_args)) 
+     	return false;
+     return true; 
 }
 
