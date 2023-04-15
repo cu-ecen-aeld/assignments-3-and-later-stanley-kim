@@ -5,12 +5,20 @@
 set -e
 set -u
 
-NUMFILES=10
-WRITESTR=AELD_IS_FUN
-WRITEDIR=/tmp/aeld-data
-username=$(cat conf/username.txt)
+cd `dirname $0`
+test_dir=`pwd`
 
-if [ $# -lt 3 ]
+#NUMFILES=10
+NUMFILES=1
+WRITESTR=AELD_IS_FUN
+#WRITEDIR=/tmp/aeld-data
+#username=$(cat conf/username.txt)
+WRITEDIR=/tmp 
+username=$(cat /etc/finer-app/conf/username.txt)
+output_file=assignment4-result.txt
+
+#if [ $# -lt 3 ]
+if [ $# -lt 2 ]
 then
 	echo "Using default value ${WRITESTR} for string to write"
 	if [ $# -lt 1 ]
@@ -22,17 +30,19 @@ then
 else
 	NUMFILES=$1
 	WRITESTR=$2
-	WRITEDIR=/tmp/aeld-data/$3
+	#WRITEDIR=/tmp/aeld-data/$3
+	WRITEDIR=/tmp
 fi
 
 MATCHSTR="The number of files are ${NUMFILES} and the number of matching lines are ${NUMFILES}"
 
 echo "Writing ${NUMFILES} files containing string ${WRITESTR} to ${WRITEDIR}"
 
-rm -rf "${WRITEDIR}"
+#rm -rf "${WRITEDIR}"
 
 # create $WRITEDIR if not assignment1
-assignment=`cat ../conf/assignment.txt`
+#assignment=`cat ../conf/assignment.txt`
+assignment=`cat /etc/finder-app/conf/assignment.txt`
 
 if [ $assignment != 'assignment1' ]
 then
@@ -55,12 +65,13 @@ fi
 for i in $( seq 1 $NUMFILES)
 do
 	#./writer.sh "$WRITEDIR/${username}$i.txt" "$WRITESTR"
-	./writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+	#./writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+	./writer "$WRITEDIR/${output_file}" "$WRITESTR"
 done
 
 OUTPUTSTRING=$(./finder.sh "$WRITEDIR" "$WRITESTR")
 # remove temporary directories
-rm -rf /tmp/aeld-data
+#rm -rf /tmp/aeld-data
 
 set +e
 echo ${OUTPUTSTRING} | grep "${MATCHSTR}"
