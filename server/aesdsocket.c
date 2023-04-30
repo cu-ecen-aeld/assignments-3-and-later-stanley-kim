@@ -195,31 +195,10 @@ int main(int argc, char** argv) {
 //				printf("(%s) %s %d\n", buf, __FUNCTION__, __LINE__); 
 				break;
 			} 
-#if 0
-			if(total_bytes_packet >= buf_length -1) {
-				buf_length = buf_length << 1;
-				if(!(buf = reallocarray(buf, buf_length, sizeof(char)))) {
-					printf("%s %d\n", __FUNCTION__, __LINE__); 
-					return -1; 
-				}
-			}
-#endif
 		}  
 		total_bytes_recv += total_bytes_packet;
 		if(!write_str(fd, buf, total_bytes_packet)) 
 			return -1 ; 
-#if 0
-		if(total_bytes_packet >= buf_length -1) {
-			do {
-				buf_length = buf_length << 1;   
-			}
-			while(total_bytes_recv > buf_length) ; 
-			if(!(buf = reallocarray(buf, buf_length, sizeof(char)))) {
-				printf("%s %d\n", __FUNCTION__, __LINE__); 
-				return -1; 
-			}
-		}
-#endif				
  		if(!read_file_to_buf(buf, total_bytes_recv)) 
 			return -1;
 		send(new_fd, buf, total_bytes_recv, 0);
