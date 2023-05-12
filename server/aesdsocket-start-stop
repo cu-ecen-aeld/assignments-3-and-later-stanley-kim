@@ -2,10 +2,10 @@
 case "$1" in
 	start)
 		echo "Starting daemon process -aesdsocket"
-		start-stop-daemon --start --name aesdsocket -a /usr/bin/aesdsocket -- -d
+		start-stop-daemon -S -n aesdsocket -a /usr/bin/aesdsocket -- -d
 	stop)
 		echo "Stopping daemon process -aesdsocket"
-		start-stop-daemon --stop --name asedsocket
+		start-stop-daemon -K -n asedsocket
 	*)
 		echo "Usage: aesdsocket-start-stop {start|stop}"
 		exit 1
